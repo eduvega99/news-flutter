@@ -14,6 +14,8 @@ class NewsProvider extends ChangeNotifier {
   List<News> topNews = [];
   List<News> categoryNews = [];
 
+  bool isLoadingCategories = false;
+
 
   NewsProvider() {
     getTopNews();
@@ -46,7 +48,6 @@ class NewsProvider extends ChangeNotifier {
     final response = await http.get(url);
     final newsResponse = NewsResponse.fromJson(response.body);
     topNews = newsResponse.newsList;
-    
     notifyListeners();
   }
   
@@ -58,10 +59,14 @@ class NewsProvider extends ChangeNotifier {
       'category' : category
     });
 
+    isLoadingCategories = true;
+    notifyListeners();
+
     final response = await http.get(url);
     final newsResponse = NewsResponse.fromJson(response.body);
     categoryNews = newsResponse.newsList;
 
+    isLoadingCategories = false;
     notifyListeners();
   }
 

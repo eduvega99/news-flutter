@@ -7,19 +7,13 @@ import 'package:news_app/providers/providers.dart';
 import 'package:news_app/widgets/widgets.dart';
 
 
-class Tab2Screen extends StatefulWidget {
-
+class Tab2Screen extends StatelessWidget {
+  
   const Tab2Screen({Key? key}) : super(key: key);
 
-  @override
-  State<Tab2Screen> createState() => _Tab2ScreenState();
-}
-
-class _Tab2ScreenState extends State<Tab2Screen> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final newsProvider = Provider.of<NewsProvider>(context);
     
     return Scaffold(
@@ -38,19 +32,19 @@ class _Tab2ScreenState extends State<Tab2Screen> with AutomaticKeepAliveClientMi
 
             const SizedBox(height: 15),
             Expanded(
-              child: 
-              RefreshIndicator(
-                onRefresh: () => newsProvider.getNewsCategory(newsProvider.selectedCategory),
-                child: NewsList(newsList: newsProvider.categoryNews)
-              ),
+              child: newsProvider.isLoadingCategories
+                ? const Center( child:  CircularProgressIndicator() )
+                : SafeArea(
+                  child: RefreshIndicator(
+                      onRefresh: () => newsProvider.getTopNews(),
+                      child: NewsList(newsList: newsProvider.categoryNews)
+                  ),
+                )
             )
           ]
         ),
       )
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 
 }
